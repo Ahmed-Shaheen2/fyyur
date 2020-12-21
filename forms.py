@@ -1,22 +1,64 @@
 from datetime import datetime
 from flask_wtf import Form
-from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField
-from wtforms.validators import DataRequired, AnyOf, URL
+from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField, TextAreaField
+from wtforms.fields.simple import SubmitField
+from wtforms.validators import DataRequired, AnyOf, URL, ValidationError
+
+availableGenres = [
+    ('Alternative', 'Alternative'),
+    ('Blues', 'Blues'),
+    ('Classical', 'Classical'),
+    ('Country', 'Country'),
+    ('Electronic', 'Electronic'),
+    ('Folk', 'Folk'),
+    ('Funk', 'Funk'),
+    ('Hip-Hop', 'Hip-Hop'),
+    ('Heavy Metal', 'Heavy Metal'),
+    ('Instrumental', 'Instrumental'),
+    ('Jazz', 'Jazz'),
+    ('Musical Theatre', 'Musical Theatre'),
+    ('Pop', 'Pop'),
+    ('Punk', 'Punk'),
+    ('R&B', 'R&B'),
+    ('Reggae', 'Reggae'),
+    ('Rock n Roll', 'Rock n Roll'),
+    ('Soul', 'Soul'),
+    ('Other', 'Other'),
+]
+
+
+def validateGenre(form, genre):
+    for genre in genre.data:
+        if genre not in list(map(lambda genreTuple: genreTuple[0], availableGenres)):
+            raise ValidationError(
+                'you should choose from available gnres only')
+
 
 class ShowForm(Form):
-    artist_id = StringField(
-        'artist_id'
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    artist_id = SelectField(
+        'artist_id',
+        coerce=int
     )
-    venue_id = StringField(
-        'venue_id'
+    venue_id = SelectField(
+        'venue_id',
+        coerce=int
     )
     start_time = DateTimeField(
         'start_time',
         validators=[DataRequired()],
-        default= datetime.today()
+        default=datetime.today()
     )
 
+    submit = SubmitField('submit')
+
+
 class VenueForm(Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     name = StringField(
         'name', validators=[DataRequired()]
     )
@@ -88,36 +130,36 @@ class VenueForm(Form):
     image_link = StringField(
         'image_link'
     )
+
     genres = SelectMultipleField(
-        # TODO implement enum restriction
-        'genres', validators=[DataRequired()],
-        choices=[
-            ('Alternative', 'Alternative'),
-            ('Blues', 'Blues'),
-            ('Classical', 'Classical'),
-            ('Country', 'Country'),
-            ('Electronic', 'Electronic'),
-            ('Folk', 'Folk'),
-            ('Funk', 'Funk'),
-            ('Hip-Hop', 'Hip-Hop'),
-            ('Heavy Metal', 'Heavy Metal'),
-            ('Instrumental', 'Instrumental'),
-            ('Jazz', 'Jazz'),
-            ('Musical Theatre', 'Musical Theatre'),
-            ('Pop', 'Pop'),
-            ('Punk', 'Punk'),
-            ('R&B', 'R&B'),
-            ('Reggae', 'Reggae'),
-            ('Rock n Roll', 'Rock n Roll'),
-            ('Soul', 'Soul'),
-            ('Other', 'Other'),
-        ]
+        'genres',
+        validators=[DataRequired(), validateGenre],
+        choices=availableGenres
+    )
+
+    image_link = StringField(
+        'image_link', validators=[URL()]
     )
     facebook_link = StringField(
         'facebook_link', validators=[URL()]
     )
+    website = StringField(
+        'website', validators=[URL()]
+    )
+
+    seeking_talent = BooleanField(
+        'seeking_talent'
+    )
+    seeking_description = TextAreaField(
+        'seeking_description'
+    )
+    submit = SubmitField('submit')
+
 
 class ArtistForm(Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     name = StringField(
         'name', validators=[DataRequired()]
     )
@@ -185,36 +227,16 @@ class ArtistForm(Form):
         'phone'
     )
     image_link = StringField(
-        'image_link'
+        'image_link', validators=[URL()]
     )
     genres = SelectMultipleField(
-        # TODO implement enum restriction
-        'genres', validators=[DataRequired()],
-        choices=[
-            ('Alternative', 'Alternative'),
-            ('Blues', 'Blues'),
-            ('Classical', 'Classical'),
-            ('Country', 'Country'),
-            ('Electronic', 'Electronic'),
-            ('Folk', 'Folk'),
-            ('Funk', 'Funk'),
-            ('Hip-Hop', 'Hip-Hop'),
-            ('Heavy Metal', 'Heavy Metal'),
-            ('Instrumental', 'Instrumental'),
-            ('Jazz', 'Jazz'),
-            ('Musical Theatre', 'Musical Theatre'),
-            ('Pop', 'Pop'),
-            ('Punk', 'Punk'),
-            ('R&B', 'R&B'),
-            ('Reggae', 'Reggae'),
-            ('Rock n Roll', 'Rock n Roll'),
-            ('Soul', 'Soul'),
-            ('Other', 'Other'),
-        ]
+
+        'genres', validators=[DataRequired(), validateGenre],
+        choices=availableGenres
     )
     facebook_link = StringField(
         # TODO implement enum restriction
         'facebook_link', validators=[URL()]
     )
 
-# TODO IMPLEMENT NEW ARTIST FORM AND NEW SHOW FORM
+    submit = SubmitField('submit')

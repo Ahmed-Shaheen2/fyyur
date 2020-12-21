@@ -10,6 +10,15 @@
 				<h5>{{ artist.name }}</h5>
 			</div>
 		</a>
+
+
+		<div style="display: inline-block;">
+
+			<a class="btn btn-primary btn-sm" href="/artists/{{ artist.id }}/edit"><i class="fas fa-edit"></i></a>
+			<a class="btn btn-danger btn-sm"
+				onclick="return confirm('this action can\'t be undone so please confirm !')"
+				href="/artists/{{ artist.id }}/delete"><i class="fas fa-trash"></i></a>
+		</div>
 	</li>
 	{% endfor %}
 </ul>

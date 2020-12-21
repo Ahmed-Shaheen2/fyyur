@@ -3,17 +3,25 @@
 {% block content %}
 {% for area in areas %}
 <h3>{{ area.city }}, {{ area.state }}</h3>
-	<ul class="items">
-		{% for venue in area.venues %}
-		<li>
-			<a href="/venues/{{ venue.id }}">
-				<i class="fas fa-music"></i>
-				<div class="item">
-					<h5>{{ venue.name }}</h5>
-				</div>
-			</a>
-		</li>
-		{% endfor %}
-	</ul>
+<ul class="items">
+	{% for venue in area.venues %}
+	<li>
+		<a href="/venues/{{ venue.id }}">
+			<i class="fas fa-music"></i>
+			<div class="item">
+				<h5>{{ venue.name }}</h5>
+			</div>
+		</a>
+
+		<div style="display: inline-block;">
+
+			<a class="btn btn-primary btn-sm" href="/venues/{{ venue.id }}/edit"><i class="fas fa-edit"></i></a>
+			<a class="btn btn-danger btn-sm"
+				onclick="return confirm('this action can\'t be undone so please confirm !')"
+				href="/venues/{{ venue.id }}/delete"><i class="fas fa-trash"></i></a>
+		</div>
+	</li>
+	{% endfor %}
+</ul>
 {% endfor %}
 {% endblock %}

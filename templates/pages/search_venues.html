@@ -5,11 +5,14 @@
 <ul class="items">
 	{% for venue in results.data %}
 	<li>
-		<a href="/venues/{{ venue.id }}">
+		<a href="/venues/{{ venue.id }}" >
 			<i class="fas fa-music"></i>
-			<div class="item">
-				<h5>{{ venue.name }}</h5>
+			<div class="item" style="flex: unset;" >
+				<h5 >{{ venue.name }}</h5>
 			</div>
+
+
+		<div style="margin-left: 15px;padding: 2px;" >numer of upcomming shows: {{ venue.num_upcoming_shows }}</div>
 		</a>
 	</li>
 	{% endfor %}
